@@ -35,6 +35,13 @@ module OmniAuth
         }
       end
 
+      credentials do
+        hash = {'token' => access_token.token}
+        hash.merge!('instance_url' => access_token.params["instance_url"])
+        hash.merge!('refresh_token' => access_token.refresh_token) if access_token.refresh_token
+        hash
+      end
+
       def raw_info
         access_token.options[:mode] = :query
         access_token.options[:param_name] = :oauth_token
