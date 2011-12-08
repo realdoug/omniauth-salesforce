@@ -20,3 +20,4 @@
         provider :salesforce, ENV['SALESFORCE_KEY'], ENV['SALESFORCE_SECRET']
       end
     end
+
