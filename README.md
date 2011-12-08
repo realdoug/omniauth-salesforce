@@ -2,8 +2,11 @@
 
 [OmniAuth](https://github.com/intridea/omniauth) Strategy for [salesforce.com](salesforce.com).
 
+## See it in action
 
-[http://omniauth-salesforce-example.herokuapp.com](http://omniauth-salesforce-example.herokuapp.com) <== demo app
+[http://omniauth-salesforce-example.herokuapp.com](http://omniauth-salesforce-example.herokuapp.com)
+
+[Source for above app](https://github.com/richardvanhook/omniauth-salesforce-example)
 
 ## Basic Usage
 
