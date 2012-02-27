@@ -10,33 +10,37 @@
 
 ## Basic Usage
 
-    require "sinatra"
-    require "omniauth"
-    require "omniauth-salesforce"
+```ruby
+require "sinatra"
+require "omniauth"
+require "omniauth-salesforce"
 
-    class MyApplication < Sinatra::Base
-      use Rack::Session
-      use OmniAuth::Builder do
-        provider :salesforce, ENV['SALESFORCE_KEY'], ENV['SALESFORCE_SECRET']
-      end
-    end
+class MyApplication < Sinatra::Base
+  use Rack::Session
+  use OmniAuth::Builder do
+    provider :salesforce, ENV['SALESFORCE_KEY'], ENV['SALESFORCE_SECRET']
+  end
+end
+```
 
 ## Including other sites
 
-    use OmniAuth::Builder do
-      provider :salesforce, 
-               ENV['SALESFORCE_KEY'], 
-               ENV['SALESFORCE_SECRET']
-      provider OmniAuth::Strategies::SalesforceSandbox, 
-               ENV['SALESFORCE_SANDBOX_KEY'], 
-               ENV['SALESFORCE_SANDBOX_SECRET']
-      provider OmniAuth::Strategies::SalesforcePreRelease, 
-               ENV['SALESFORCE_PRERELEASE_KEY'], 
-               ENV['SALESFORCE_PRERELEASE_SECRET']
-      provider OmniAuth::Strategies::DatabaseDotCom, 
-               ENV['DATABASE_DOT_COM_KEY'], 
-               ENV['DATABASE_DOT_COM_SECRET']
-    end
+```ruby
+use OmniAuth::Builder do
+    provider :salesforce, 
+             ENV['SALESFORCE_KEY'], 
+             ENV['SALESFORCE_SECRET']
+    provider OmniAuth::Strategies::SalesforceSandbox, 
+             ENV['SALESFORCE_SANDBOX_KEY'], 
+             ENV['SALESFORCE_SANDBOX_SECRET']
+    provider OmniAuth::Strategies::SalesforcePreRelease, 
+             ENV['SALESFORCE_PRERELEASE_KEY'], 
+             ENV['SALESFORCE_PRERELEASE_SECRET']
+    provider OmniAuth::Strategies::DatabaseDotCom, 
+             ENV['DATABASE_DOT_COM_KEY'], 
+             ENV['DATABASE_DOT_COM_SECRET']
+end
+```
 
 ## Resources
 
