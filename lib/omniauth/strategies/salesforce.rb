@@ -4,7 +4,7 @@ module OmniAuth
   module Strategies
     class Salesforce < OmniAuth::Strategies::OAuth2
 
-      MOBILE_USER_AGENTS =  'webos|ipod|iphone|mobile'
+      MOBILE_USER_AGENTS =  'webos|ipod|iphone|ipad|android|blackberry|mobile'
 
       option :client_options, {
         :site          => 'https://login.salesforce.com',
