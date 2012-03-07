@@ -6,21 +6,21 @@ describe OmniAuth::Strategies::Salesforce do
 		OmniAuth.config.test_mode = true
 		rack_app = []
 		rack_app.stub :call
-		strategy = OmniAuth::Strategies::Salesforce.new rack_app
+		strategy = OmniAuth::Strategies::Salesforce.new rack_app, 'Consumer Key', 'Consumer Secret'
 	end
 	describe "request_phase" do
 		env = nil
 		before do
 			env = {
-			'rack.session' => [], 
-			'HTTP_USER_AGENT' => 'unknown',
-			'REQUEST_METHOD' => 'GET',
-			'rack.input' => '',
-			'rack.url_scheme' => 'http',
-			'SERVER_NAME' => 'server.example', 
-			'QUERY_STRING' => 'code=xxxx', 
-			'SCRIPT_NAME' => '', 
-			'SERVER_PORT' => 80
+				'rack.session' => [], 
+				'HTTP_USER_AGENT' => 'unknown',
+				'REQUEST_METHOD' => 'GET',
+				'rack.input' => '',
+				'rack.url_scheme' => 'http',
+				'SERVER_NAME' => 'server.example', 
+				'QUERY_STRING' => 'code=xxxx', 
+				'SCRIPT_NAME' => '', 
+				'SERVER_PORT' => 80
 			}
 		end
 		context "when using a mobile browser" do
@@ -91,8 +91,8 @@ describe OmniAuth::Strategies::Salesforce do
 			access_token = OAuth2::AccessToken.from_hash client, {
 				'access_token' => 'token',
 				'instance_url' => 'http://instance.salesforce.example',
-				'signature' => '',
-				'issued_at' => ''
+				'signature' => 'invalid',
+				'issued_at' => '1296458209517'
 			}
 			strategy.stub(:raw_info) { raw_info }
 			strategy.stub(:access_token) { access_token }
@@ -173,10 +173,43 @@ describe OmniAuth::Strategies::Salesforce do
 			end
 		end
 		describe "user id validation" do
+			client_id = nil
+			issued_at = nil
+			signature = nil
+			instance_url = 'http://instance.salesforce.example'
+			before do
+					client_id = "https://login.salesforce.com/id/00Dd0000000d45TEBQ/005d0000000fyGPCCY"
+					issued_at = "1331142541514"
+					signature = Base64.strict_encode64(OpenSSL::HMAC.digest('sha256', strategy.options.client_secret, client_id + issued_at))
+			end
 			context "when the signature does not match" do
+				before do
+					access_token = OAuth2::AccessToken.from_hash strategy.access_token.client, {
+						'id' => 'forged client id',
+						'issued_at' => issued_at,
+						'instance_url' => 'http://instance.salesforce.example',
+						'signature' => signature
+					}
+					strategy.stub(:access_token) { access_token }
+				end
 				it "should call fail!" do
-					strategy.callback_phase
 					strategy.should_receive(:fail!)
+					strategy.auth_hash
+				end
+			end
+			context "when the signature does match" do
+				before do
+					access_token = OAuth2::AccessToken.from_hash strategy.access_token.client, {
+						'id' => client_id,
+						'issued_at' => issued_at,
+						'instance_url' => 'http://instance.salesforce.example',
+						'signature' => signature
+					}
+					strategy.stub(:access_token) { access_token }
+				end
+				it "should not fail" do
+					strategy.should_not_receive(:fail!)
+					strategy.auth_hash
 				end
 			end
 		end

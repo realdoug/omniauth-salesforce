@@ -1,4 +1,6 @@
 require 'omniauth-oauth2'
+require 'openssl'
+require 'base64'
 
 module OmniAuth
   module Strategies
@@ -26,6 +28,15 @@ module OmniAuth
           mobile_request = ua.downcase =~ Regexp.new(MOBILE_USER_AGENTS)
           options[:display] = mobile_request ? 'touch' : 'page'
         end
+        super
+      end
+
+      def auth_hash
+        signed_value = access_token.params['id'] + access_token.params['issued_at']
+        raw_expected_signature = OpenSSL::HMAC.digest('sha256', options.client_secret, signed_value)
+        expected_signature = Base64.strict_encode64 raw_expected_signature
+        signature = access_token.params['signature']
+        fail! "Salesforce user id did not match signature!" unless signature == expected_signature
         super
       end
 
