@@ -90,7 +90,9 @@ describe OmniAuth::Strategies::Salesforce do
 			client = OAuth2::Client.new 'id', 'secret', {:site => 'example.com'}
 			access_token = OAuth2::AccessToken.from_hash client, {
 				'access_token' => 'token',
-				'instance_url' => 'http://instance.salesforce.example'
+				'instance_url' => 'http://instance.salesforce.example',
+				'signature' => '',
+				'issued_at' => ''
 			}
 			strategy.stub(:raw_info) { raw_info }
 			strategy.stub(:access_token) { access_token }
@@ -163,12 +165,19 @@ describe OmniAuth::Strategies::Salesforce do
 			it "sets pod" do
 				subject['pod'].should == strategy.access_token.params['instance_url']
 			end
-			it "sets signature"
-			it "sets issued_at"
+			it "sets signature" do
+				subject['signature'].should == strategy.access_token.params['signature']
+			end
+			it "sets issued_at" do
+				subject['issued_at'].should == strategy.access_token.params['issued_at']
+			end
 		end
-		describe "callback_phase" do
+		describe "user id validation" do
 			context "when the signature does not match" do
-				it "should call fail!"
+				it "should call fail!" do
+					strategy.callback_phase
+					strategy.should_receive(:fail!)
+				end
 			end
 		end
 	end

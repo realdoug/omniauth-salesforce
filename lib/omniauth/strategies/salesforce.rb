@@ -62,7 +62,9 @@ module OmniAuth
       extra do
         raw_info.merge({
           'instance_url' => access_token.params['instance_url'],
-          'pod' => access_token.params['instance_url']
+          'pod' => access_token.params['instance_url'],
+          'signature' => access_token.params['signature'],
+          'issued_at' => access_token.params['issued_at']
         })
       end
       
