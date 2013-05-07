@@ -2,7 +2,7 @@
 
 [OmniAuth](https://github.com/intridea/omniauth) Strategy for [salesforce.com](salesforce.com).
 
-Note: This is a fork of the [original](https://github.com/richardvanhook/omniauth-salesforce) repo and is now the main repo for the omniauth-salesforce gem.
+Note: This is a fork of the [original](https://github.com/richardvanhook/omniauth-salesforce) project and is now the main repository for the omniauth-salesforce gem.
 
 ## See it in action
 
