@@ -14,6 +14,7 @@ Gem::Specification.new do |gem|
   gem.name          = "omniauth-salesforce"
   gem.require_paths = ["lib"]
   gem.version       = OmniAuth::Salesforce::VERSION
+  gem.license       = "MIT"
 
   gem.add_dependency 'omniauth', '~> 1.0'
   gem.add_dependency 'omniauth-oauth2', '~> 1.0'
