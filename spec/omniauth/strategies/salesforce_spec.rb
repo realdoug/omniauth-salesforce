@@ -12,7 +12,7 @@ describe OmniAuth::Strategies::Salesforce do
 		env = nil
 		before do
 			env = {
-				'rack.session' => [], 
+				'rack.session' => {},
 				'HTTP_USER_AGENT' => 'unknown',
 				'REQUEST_METHOD' => 'GET',
 				'rack.input' => '',
