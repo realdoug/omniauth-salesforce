@@ -17,7 +17,8 @@ module OmniAuth
         :scope,
         :display,
         :immediate,
-        :state
+        :state,
+        :prompt
       ]
 
       def request_phase
