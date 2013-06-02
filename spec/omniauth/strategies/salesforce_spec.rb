@@ -17,9 +17,9 @@ describe OmniAuth::Strategies::Salesforce do
 				'REQUEST_METHOD' => 'GET',
 				'rack.input' => '',
 				'rack.url_scheme' => 'http',
-				'SERVER_NAME' => 'server.example', 
-				'QUERY_STRING' => 'code=xxxx', 
-				'SCRIPT_NAME' => '', 
+				'SERVER_NAME' => 'server.example',
+				'QUERY_STRING' => 'code=xxxx',
+				'SCRIPT_NAME' => '',
 				'SERVER_PORT' => 80
 			}
 		end
@@ -107,7 +107,7 @@ describe OmniAuth::Strategies::Salesforce do
 			it "returns an info hash" do
 				subject.should_not be_nil
 			end
-			it "sets name" do 
+			it "sets name" do
 				subject['name'].should == raw_info['display_name']
 			end
 			it "sets email" do
@@ -140,7 +140,7 @@ describe OmniAuth::Strategies::Salesforce do
 		end
 		describe "credentials" do
 			subject { strategy.credentials }
-			it "sets token" do 
+			it "sets token" do
 				subject['token'].should == strategy.access_token.token
 			end
 			it "sets instance_url" do
@@ -180,7 +180,7 @@ describe OmniAuth::Strategies::Salesforce do
 			before do
 					client_id = "https://login.salesforce.com/id/00Dd0000000d45TEBQ/005d0000000fyGPCCY"
 					issued_at = "1331142541514"
-					signature = Base64.strict_encode64(OpenSSL::HMAC.digest('sha256', strategy.options.client_secret, client_id + issued_at))
+					signature = Base64.strict_encode64(OpenSSL::HMAC.digest('sha256', strategy.options.client_secret.to_s, client_id + issued_at))
 			end
 			context "when the signature does not match" do
 				before do
