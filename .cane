@@ -1,0 +1,4 @@
+--no-doc
+--no-style
+--style-measure 99
+--style-exclude spec/**/*

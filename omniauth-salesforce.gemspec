@@ -1,25 +1,23 @@
-# -*- encoding: utf-8 -*-
-require File.expand_path('../lib/omniauth-salesforce/version', __FILE__)
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'omniauth-salesforce/version'
 
-Gem::Specification.new do |gem|
-  gem.authors       = ["Richard Vanhook"]
-  gem.email         = ["rvanhook@salesforce.com"]
-  gem.description   = %q{OmniAuth strategy for salesforce.com.}
-  gem.summary       = %q{OmniAuth strategy for salesforce.com.}
-  gem.homepage      = "https://github.com/realdoug/omniauth-salesforce"
+Gem::Specification.new do |spec|
+  spec.name          = 'omniauth-salesforce'
+  spec.version       = OmniAuth::Salesforce::VERSION
+  spec.authors       = ['Richard Vanhook', 'Alexander Simonov']
+  spec.email         = ['rvanhook@salesforce.com', 'alex@simonov.me']
+  spec.description   = %q{OmniAuth strategy for salesforce.com.}
+  spec.summary       = %q{'OmniAuth strategy for salesforce.com.}
+  spec.homepage      = 'https://github.com/dotpromo/omniauth_salesforce'
+  spec.license       = 'MIT'
 
-  gem.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
-  gem.files         = `git ls-files`.split("\n")
-  gem.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
-  gem.name          = "omniauth-salesforce"
-  gem.require_paths = ["lib"]
-  gem.version       = OmniAuth::Salesforce::VERSION
-  gem.license       = "MIT"
+  spec.files         = `git ls-files`.split($/)
+  spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
+  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
+  spec.require_paths = %w(lib)
 
-  gem.add_dependency 'omniauth', '~> 1.0'
-  gem.add_dependency 'omniauth-oauth2', '~> 1.0'
-  gem.add_development_dependency 'rspec', '~> 2.7'
-  gem.add_development_dependency 'rack-test'
-  gem.add_development_dependency 'simplecov'
-  gem.add_development_dependency 'webmock'
+  spec.add_dependency 'omniauth', '~> 1.2'
+  spec.add_dependency 'omniauth-oauth2', '>= 1.1.2'
+  spec.required_ruby_version = '~> 2.0.0'
 end
