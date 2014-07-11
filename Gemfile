@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 gemspec
 
 group :development, :test do
+  gem 'rake'
   gem 'rspec', '>= 2.14'
   gem 'simplecov', :require => false
   gem 'coveralls', :require => false
