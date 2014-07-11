@@ -7,14 +7,14 @@ RSpec.describe OmniAuth::Strategies::Salesforce do
   let(:request) { double('Request', :params => {}, :cookies => {}, :env => {}, user_agent: 'default') }
   let(:strategy) do
     args = ['appid', 'secret', @options || {}].compact
-    described_class.new(*args).tap do |strategy|
+    described_class.new(nil, *args).tap do |strategy|
       allow(strategy).to receive(:request) {
         request
       }
     end
   end
   let(:client) do
-    OAuth2::Client.new('id', 'secret', site: 'example.com')
+    strategy.client
   end
 
   let(:access_token) { OAuth2::AccessToken.from_hash(client, 'access_token' => 'token',

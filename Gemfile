@@ -3,11 +3,14 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in omniauth-salesforce.gemspec
 gemspec
 
-group :development, :test do
+group :test do
   gem 'rake'
   gem 'rspec', '>= 2.14'
   gem 'simplecov', :require => false
   gem 'coveralls', :require => false
+end
+
+group :local_development do
   gem 'terminal-notifier-guard', require: false
   gem 'guard-rspec', require: false
   gem 'guard-bundler', require: false
@@ -15,7 +18,5 @@ group :development, :test do
   gem 'guard-rubocop', require: false
   gem 'guard-cane', require: false
   gem 'guard-reek', github: 'pericles/guard-reek', require: false
-  gem 'rack-test'
-  gem 'webmock'
   gem 'pry'
 end
