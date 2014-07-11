@@ -1,6 +1,7 @@
 # omniauth-salesforce
 
 [OmniAuth](https://github.com/intridea/omniauth) Strategy for [salesforce.com](salesforce.com).
+
 [![Build Status](https://travis-ci.org/dotpromo/omniauth-salesforce.svg?branch=master)](https://travis-ci.org/dotpromo/omniauth-salesforce)
 [![Coverage Status](https://coveralls.io/repos/dotpromo/omniauth-salesforce/badge.png)](https://coveralls.io/r/dotpromo/omniauth-salesforce)[![Code Climate](https://codeclimate.com/github/dotpromo/omniauth-salesforce.png)](https://codeclimate.com/github/dotpromo/omniauth-salesforce)
 
