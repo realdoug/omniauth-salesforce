@@ -37,11 +37,11 @@ module OmniAuth
       end
 
       def auth_hash
-        fail! FAIL_MESSAGE unless signature_valid?
+        fail! FAIL_MESSAGE unless valid_signature?
         super
       end
 
-      def signature_valid?
+      def valid_signature?
         raw_expected_signature =
           OpenSSL::HMAC.digest('sha256', options.client_secret.to_s, signed_value)
         expected_signature = Base64.strict_encode64(raw_expected_signature)

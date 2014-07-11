@@ -16,4 +16,5 @@ group :development, :test do
   gem 'guard-reek', github: 'pericles/guard-reek', require: false
   gem 'rack-test'
   gem 'webmock'
+  gem 'pry'
 end

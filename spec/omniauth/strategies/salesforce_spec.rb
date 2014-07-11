@@ -5,6 +5,24 @@ RSpec.describe OmniAuth::Strategies::Salesforce do
   let(:custom_authorize_url) { '/oauth2/authorize' }
   let(:custom_token_url) { '/custom/token' }
   let(:request) { double('Request', :params => {}, :cookies => {}, :env => {}, user_agent: 'default') }
+  let(:strategy) do
+    args = ['appid', 'secret', @options || {}].compact
+    described_class.new(*args).tap do |strategy|
+      allow(strategy).to receive(:request) {
+        request
+      }
+    end
+  end
+  let(:client) do
+    OAuth2::Client.new('id', 'secret', site: 'example.com')
+  end
+
+  let(:access_token) { OAuth2::AccessToken.from_hash(client, 'access_token' => 'token',
+                                                     'instance_url' => 'http://instance.salesforce.example',
+                                                     'signature' => 'invalid',
+                                                     'issued_at' => '1296458209517') }
+
+  subject { strategy }
 
   before do
     ::OmniAuth.config.test_mode = true
@@ -14,14 +32,6 @@ RSpec.describe OmniAuth::Strategies::Salesforce do
     ::OmniAuth.config.test_mode = false
   end
 
-  subject do
-    args = ['appid', 'secret', @options || {}].compact
-    described_class.new(*args).tap do |strategy|
-      allow(strategy).to receive(:request) {
-        request
-      }
-    end
-  end
 
   describe '#client_options' do
     it 'should have correct name' do
@@ -42,17 +52,17 @@ RSpec.describe OmniAuth::Strategies::Salesforce do
 
     describe 'should be overridable' do
       it 'for site' do
-        @options = { client_options: { site: custom_site_url } }
+        @options = {client_options: {site: custom_site_url}}
         expect(subject.options.client_options.site).to eq(custom_site_url)
       end
 
       it 'for authorize url' do
-        @options = { client_options: { authorize_url: custom_authorize_url } }
+        @options = {client_options: {authorize_url: custom_authorize_url}}
         expect(subject.options.client_options.authorize_url).to eq(custom_authorize_url)
       end
 
       it 'for token url' do
-        @options = { client_options: { token_url: custom_token_url } }
+        @options = {client_options: {token_url: custom_token_url}}
         expect(subject.options.client_options.token_url).to eq(custom_token_url)
       end
     end
@@ -64,15 +74,15 @@ RSpec.describe OmniAuth::Strategies::Salesforce do
     end
     context 'when using a mobile browser' do
       user_agents = {
-        Pre: 'Mozilla/5.0 (webOS/1.4.0; U; en-US) AppleWebKit/532.2 (KHTML, like Gecko) Version/1.0 Safari/532.2 Pre/1.1',
-        iPod: 'Mozilla/5.0 (iPod; U; CPU like Mac OS X; en) AppleWebKit/420.1 (KHTML, like Gecko) Version/3.0 Mobile/4A93 Safari/419.3',
-        iPhone: 'Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543 Safari/419.3',
-        iPad: 'Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B334b Safari/531.21.10',
-        Nexus: 'Mozilla/5.0 (Linux; U; Android 2.2; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1',
-        myTouch: 'Mozilla/5.0 (Linux; U; Android 1.6; en-us; WOWMobile myTouch 3G Build/unknown) AppleWebKit/528.5+ (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1',
-        Storm: 'BlackBerry9530/4.7.0.148 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/105',
-        Torch: 'Mozilla/5.0 (BlackBerry; U; BlackBerry 9810; en-US) AppleWebKit/534.11+ (KHTML, like Gecko) Version/7.0.0 Mobile Safari/534.11+',
-        generic_mobile: 'some mobile device'
+          Pre: 'Mozilla/5.0 (webOS/1.4.0; U; en-US) AppleWebKit/532.2 (KHTML, like Gecko) Version/1.0 Safari/532.2 Pre/1.1',
+          iPod: 'Mozilla/5.0 (iPod; U; CPU like Mac OS X; en) AppleWebKit/420.1 (KHTML, like Gecko) Version/3.0 Mobile/4A93 Safari/419.3',
+          iPhone: 'Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543 Safari/419.3',
+          iPad: 'Mozilla/5.0 (iPad; U; CPU OS 3_2 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/4.0.4 Mobile/7B334b Safari/531.21.10',
+          Nexus: 'Mozilla/5.0 (Linux; U; Android 2.2; en-us; Nexus One Build/FRF91) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1',
+          myTouch: 'Mozilla/5.0 (Linux; U; Android 1.6; en-us; WOWMobile myTouch 3G Build/unknown) AppleWebKit/528.5+ (KHTML, like Gecko) Version/3.1.2 Mobile Safari/525.20.1',
+          Storm: 'BlackBerry9530/4.7.0.148 Profile/MIDP-2.0 Configuration/CLDC-1.1 VendorID/105',
+          Torch: 'Mozilla/5.0 (BlackBerry; U; BlackBerry 9810; en-US) AppleWebKit/534.11+ (KHTML, like Gecko) Version/7.0.0 Mobile Safari/534.11+',
+          generic_mobile: 'some mobile device'
       }
       user_agents.each_pair do |name, agent|
         context "with the user agent from a #{name}" do
@@ -87,10 +97,10 @@ RSpec.describe OmniAuth::Strategies::Salesforce do
     end
     context 'when using a desktop browser' do
       user_agents = {
-        Chrome: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21',
-        Safari: 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; de-at) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1',
-        IE: 'Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET CLR 1.0.3705; .NET CLR 1.1.4322)',
-        anything_else: 'unknown'
+          Chrome: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.21 (KHTML, like Gecko) Chrome/19.0.1042.0 Safari/535.21',
+          Safari: 'Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10_6_8; de-at) AppleWebKit/533.21.1 (KHTML, like Gecko) Version/5.0.5 Safari/533.21.1',
+          IE: 'Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET CLR 1.0.3705; .NET CLR 1.1.4322)',
+          anything_else: 'unknown'
       }
       user_agents.each_pair do |name, agent|
         context "with the user agent from #{name}" do
@@ -119,7 +129,7 @@ RSpec.describe OmniAuth::Strategies::Salesforce do
       end
 
       it 'should set scope parameter if present' do
-        @options = { scope: 'some value' }
+        @options = {scope: 'some value'}
         expect(subject.authorize_params['scope']).to eq('some value')
       end
     end
@@ -130,7 +140,7 @@ RSpec.describe OmniAuth::Strategies::Salesforce do
       end
 
       it 'should set prompt parameter if present' do
-        @options = { prompt: 'some value' }
+        @options = {prompt: 'some value'}
         expect(subject.authorize_params['prompt']).to eq('some value')
       end
     end
@@ -141,7 +151,7 @@ RSpec.describe OmniAuth::Strategies::Salesforce do
       end
 
       it 'should set login_hint parameter if present' do
-        @options = { login_hint: 'some value' }
+        @options = {login_hint: 'some value'}
         expect(subject.authorize_params['login_hint']).to eq('some value')
       end
     end
@@ -152,7 +162,7 @@ RSpec.describe OmniAuth::Strategies::Salesforce do
       end
 
       it 'should set response_type parameter if present' do
-        @options = { response_type: 'some value' }
+        @options = {response_type: 'some value'}
         expect(subject.authorize_params['response_type']).to eq('some value')
       end
     end
@@ -163,7 +173,7 @@ RSpec.describe OmniAuth::Strategies::Salesforce do
       end
 
       it 'should set immediate parameter if present' do
-        @options = { immediate: 'some value' }
+        @options = {immediate: 'some value'}
         expect(subject.authorize_params['immediate']).to eq('some value')
       end
     end
@@ -182,32 +192,38 @@ RSpec.describe OmniAuth::Strategies::Salesforce do
     end
   end
 
-  describe 'callback phase' do
-    raw_info = nil
-    before do
-      raw_info = {
-        'id' => 'salesforce id',
-        'display_name' => 'display name',
-        'email' => 'email',
-        'nick_name' => 'nick name',
-        'first_name' => 'first name',
-        'last_name' => 'last name',
-        'photos' => {'thumbnail' => '/thumbnail/url'},
-        'urls' => {
-          'enterprise' => 'https://salesforce.example/services',
-          'metadata' => 'https://salesforce.example/services'
-        }
-      }
-      client = OAuth2::Client.new 'id', 'secret', site: 'example.com'
-      access_token = OAuth2::AccessToken.from_hash client,
-                                                   'access_token' => 'token',
-                                                   'instance_url' => 'http://instance.salesforce.example',
-                                                   'signature' => 'invalid',
-                                                   'issued_at' => '1296458209517'
-
-      allow(strategy).to receive(:raw_info) { raw_info }
-      allow(strategy).to receive(:access_token) { access_token }
+  describe '#raw_info' do
+    before :each do
+      allow(strategy).to receive(:access_token).and_return(access_token)
     end
+
+    it 'should include mode and param_name' do
+    end
+  end
+
+  describe 'callback phase' do
+
+    let(:raw_info) do
+      {
+          'id' => 'salesforce id',
+          'display_name' => 'display name',
+          'email' => 'email',
+          'nick_name' => 'nick name',
+          'first_name' => 'first name',
+          'last_name' => 'last name',
+          'photos' => {'thumbnail' => '/thumbnail/url'},
+          'urls' => {
+              'enterprise' => 'https://salesforce.example/services',
+              'metadata' => 'https://salesforce.example/services'
+          }
+      }
+    end
+
+    before :each do
+      allow(strategy).to receive(:access_token).and_return(access_token)
+      allow(strategy).to receive(:raw_info).and_return(raw_info)
+    end
+
     describe 'uid' do
       it 'sets the id' do
         expect(strategy.uid).to eq(raw_info['id'])
@@ -284,40 +300,28 @@ RSpec.describe OmniAuth::Strategies::Salesforce do
       end
     end
     describe 'user id validation' do
-      client_id = nil
-      issued_at = nil
-      signature = nil
-      instance_url = 'http://instance.salesforce.example'
-      before do
-        client_id = 'https://login.salesforce.com/id/00Dd0000000d45TEBQ/005d0000000fyGPCCY'
-        issued_at = '1331142541514'
-        signature = Base64.strict_encode64(OpenSSL::HMAC.digest('sha256', strategy.options.client_secret.to_s, client_id + issued_at))
+      let(:issued_at) { '1331142541514' }
+      let(:signature) do
+        Base64.strict_encode64(OpenSSL::HMAC.digest('sha256', strategy.options.client_secret.to_s, client_id + issued_at))
       end
-      context 'when the signature does not match' do
-        before do
-          access_token = OAuth2::AccessToken.from_hash strategy.access_token.client,
-                                                       'id' => 'forged client id',
-                                                       'issued_at' => issued_at,
-                                                       'instance_url' => 'http://instance.salesforce.example',
-                                                       'signature' => signature
+      let(:client_id) { 'https://login.salesforce.com/id/00Dd0000000d45TEBQ/005d0000000fyGPCCY' }
+      let(:client_string) { client_id }
+      let(:access_token) do
+        OAuth2::AccessToken.from_hash client,
+                                      'id' => client_string,
+                                      'issued_at' => issued_at,
+                                      'instance_url' => 'http://instance.salesforce.example',
+                                      'signature' => signature
+      end
 
-          allow(strategy).to receive(:access_token) { access_token }
-        end
+      context 'when the signature does not match' do
+        let(:client_string) { 'forget client id' }
         it 'should call fail!' do
           expect(strategy).to receive(:fail!)
           strategy.auth_hash
         end
       end
       context 'when the signature does match' do
-        before do
-          access_token = OAuth2::AccessToken.from_hash strategy.access_token.client,
-                                                       'id' => client_id,
-                                                       'issued_at' => issued_at,
-                                                       'instance_url' => 'http://instance.salesforce.example',
-                                                       'signature' => signature
-
-          allow(strategy).to receive(:access_token) { access_token }
-        end
         it 'should not fail' do
           expect(strategy).not_to receive(:fail!)
           strategy.auth_hash
