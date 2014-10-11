@@ -66,8 +66,7 @@ module OmniAuth
       end
 
       def raw_info
-        access_token.options[:mode] = :query
-        access_token.options[:param_name] = :oauth_token
+        access_token.options[:mode] = :header
         @raw_info ||= access_token.post(access_token['id']).parsed
       end
 
