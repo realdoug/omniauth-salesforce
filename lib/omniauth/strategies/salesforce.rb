@@ -18,7 +18,8 @@ module OmniAuth
         :display,
         :immediate,
         :state,
-        :prompt
+        :prompt,
+        :redirect_uri
       ]
 
       def request_phase
