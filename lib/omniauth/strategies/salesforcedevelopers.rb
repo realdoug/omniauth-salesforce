@@ -4,7 +4,7 @@ require 'base64'
 
 module OmniAuth
   module Strategies
-    class Salesforce < OmniAuth::Strategies::OAuth2
+    class Salesforcedevelopers < OmniAuth::Strategies::OAuth2
 
       MOBILE_USER_AGENTS =  'webos|ipod|iphone|ipad|android|blackberry|mobile'
 
@@ -82,15 +82,15 @@ module OmniAuth
 
     end
 
-    class SalesforceSandbox < OmniAuth::Strategies::Salesforce
+    class SalesforceSandbox < OmniAuth::Strategies::Salesforcedevelopers
       default_options[:client_options][:site] = 'https://test.salesforce.com'
     end
 
-    class DatabaseDotCom < OmniAuth::Strategies::Salesforce
+    class DatabaseDotCom < OmniAuth::Strategies::Salesforcedevelopers
       default_options[:client_options][:site] = 'https://login.database.com'
     end
 
-    class SalesforcePreRelease < OmniAuth::Strategies::Salesforce
+    class SalesforcePreRelease < OmniAuth::Strategies::Salesforcedevelopers
       default_options[:client_options][:site] = 'https://prerellogin.pre.salesforce.com/'
     end
 
