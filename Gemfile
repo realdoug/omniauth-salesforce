@@ -1,7 +1,10 @@
 source 'https://rubygems.org'
 
-# Specify your gem's dependencies in omniauth-salesforce.gemspec
 gemspec
+
+group :development do
+  gem 'rubocop', '~> 0.52.1', require: false
+end
 
 group :development, :test do
   gem 'guard'
