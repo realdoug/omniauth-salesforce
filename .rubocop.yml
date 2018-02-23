@@ -1,0 +1,103 @@
+# This is the configuration used to check the rubocop source code.
+
+inherit_from: .rubocop_todo.yml
+require:
+  - rubocop/cop/internal_affairs
+
+AllCops:
+  Exclude:
+    - 'vendor/**/*'
+    - 'spec/fixtures/**/*'
+    - 'tmp/**/*'
+  TargetRubyVersion: 2.1
+
+Naming/PredicateName:
+  # Method define macros for dynamically generated method.
+  MethodDefinitionMacros:
+    - define_method
+    - define_singleton_method
+    - def_node_matcher
+    - def_node_search
+
+# Override
+Style/BracesAroundHashParameters:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  EnforcedStyle: always
+
+Style/FormatStringToken:
+  # Because we parse a lot of source codes from strings. Percent arrays
+  # look like unannotated format string tokens to this cop.
+  Exclude:
+    - spec/**/*
+
+# Override, less diff
+Style/TrailingCommaInArguments:
+  EnforcedStyleForMultiline: comma
+
+# Override, less diff
+Style/TrailingCommaInLiteral:
+  EnforcedStyleForMultiline: comma
+
+Layout/EndOfLine:
+  EnforcedStyle: lf
+
+Layout/ClassStructure:
+  Enabled: true
+  Categories:
+    module_inclusion:
+      - include
+      - prepend
+      - extend
+  ExpectedOrder:
+      - module_inclusion
+      - constants
+      - public_class_methods
+      - initializer
+      - instance_methods
+      - protected_methods
+      - private_methods
+
+Layout/IndentHeredoc:
+  EnforcedStyle: powerpack
+
+Lint/AmbiguousBlockAssociation:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Lint/InterpolationCheck:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Lint/UselessAccessModifier:
+  MethodCreatingMethods:
+    - 'def_matcher'
+    - 'def_node_matcher'
+
+Lint/BooleanSymbol:
+  Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*.rb'
+
+# Override
+Metrics/LineLength:
+  Max: 120
+
+Metrics/ModuleLength:
+  Exclude:
+    - 'spec/**/*.rb'
+
+Performance/Caller:
+  Exclude:
+    - spec/rubocop/cop/performance/caller_spec.rb
+
+RSpec/PredicateMatcher:
+  EnforcedStyle: explicit
+
+RSpec/NestedGroups:
+  Max: 7
