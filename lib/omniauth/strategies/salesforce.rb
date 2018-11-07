@@ -34,6 +34,11 @@ module OmniAuth
         super
       end
 
+      def callback_phase
+        options.update(@env["omniauth.params"])
+        super
+      end      
+
       def auth_hash
         signed_value = access_token.params['id'] + access_token.params['issued_at']
         raw_expected_signature = OpenSSL::HMAC.digest('sha256', options.client_secret.to_s, signed_value)
