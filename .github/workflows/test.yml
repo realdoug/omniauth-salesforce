@@ -16,6 +16,6 @@ jobs:
         with:
           ruby-version: 2.6.6
           bundler-cache: true
-      - name: Build and test with Rake
+      - name: Build and test with rspec
         run: |
-          bundle exec rake
+          bundle exec rspec
