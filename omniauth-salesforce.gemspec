@@ -16,7 +16,7 @@ Gem::Specification.new do |gem|
   gem.license       = 'MIT'
 
   gem.add_dependency 'omniauth', '~> 1.0'
-  gem.add_dependency 'omniauth-oauth2', '>= 1.5.0'
+  gem.add_dependency 'omniauth-oauth2', '= 1.7.1'
   gem.required_ruby_version = '>= 2.1.0'
   gem.add_development_dependency 'rack-test'
   gem.add_development_dependency 'rspec', '~> 2.7'
