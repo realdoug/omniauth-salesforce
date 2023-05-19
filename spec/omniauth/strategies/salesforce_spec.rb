@@ -6,7 +6,7 @@ describe OmniAuth::Strategies::Salesforce do
 	before do
 		OmniAuth.config.test_mode = true
 		rack_app = []
-		rack_app.stub :call
+		allow(rack_app).to receive(:call)
 		strategy = OmniAuth::Strategies::Salesforce.new rack_app, 'Consumer Key', 'Consumer Secret'
 	end
 
@@ -50,7 +50,7 @@ describe OmniAuth::Strategies::Salesforce do
 					subject {strategy.options}
 
 					it "sets the :display option to 'touch'" do
-						subject[:display].should == 'touch'
+						expect(subject[:display]).to eq 'touch'
 					end
 				end
 			end
@@ -75,7 +75,7 @@ describe OmniAuth::Strategies::Salesforce do
 					subject {strategy.options}
 
 					it "sets the :display option to 'page'" do
-						subject[:display].should == 'page'
+						expect(subject[:display]).to eq 'page'
 					end
 				end
 			end
@@ -108,13 +108,13 @@ describe OmniAuth::Strategies::Salesforce do
 				'issued_at' => '1296458209517'
 			}
 
-			strategy.stub(:raw_info) { raw_info }
-			strategy.stub(:access_token) { access_token }
+			allow(strategy).to receive(:raw_info).and_return(raw_info)
+			allow(strategy).to receive(:access_token).and_return(access_token)
 		end
 
 		describe "uid" do
 			it "sets the id" do
-				strategy.uid.should == raw_info['id']
+				expect(strategy.uid).to eq raw_info['id']
 			end
 		end
 
@@ -122,47 +122,47 @@ describe OmniAuth::Strategies::Salesforce do
 			subject { strategy.info }
 
 			it "returns an info hash" do
-				subject.should_not be_nil
+				expect(subject).to_not be_nil
 			end
 
 			it "sets name" do
-				subject['name'].should == raw_info['display_name']
+				expect(subject['name']).to eq raw_info['display_name']
 			end
 
 			it "sets email" do
-				subject['email'].should == raw_info['email']
+				expect(subject['email']).to eq raw_info['email']
 			end
 
 			it "sets nickname" do
-				subject['nickname'].should == raw_info['nick_name']
+				expect(subject['nickname']).to eq raw_info['nick_name']
 			end
 
 			it "sets first_name" do
-				subject['first_name'].should == raw_info['first_name']
+				expect(subject['first_name']).to eq raw_info['first_name']
 			end
 
 			it "sets last_name" do
-				subject['last_name'].should == raw_info['last_name']
+				expect(subject['last_name']).to eq raw_info['last_name']
 			end
 
 			it "sets location" do
-				subject['location'].should == ''
+				expect(subject['location']).to eq ''
 			end
 
 			it "sets description" do
-				subject['description'].should == ''
+				expect(subject['description']).to eq ''
 			end
 
 			it "sets image" do
-				subject['image'].should == raw_info['photos']['thumbnail'] + "?oauth_token=#{strategy.access_token.token}"
+				expect(subject['image']).to eq (raw_info['photos']['thumbnail'] + "?oauth_token=#{strategy.access_token.token}")
 			end
 
 			it "sets phone" do
-				subject['phone'].should == ''
+				expect(subject['phone']).to eq ''
 			end
 
 			it "sets urls" do
-				subject['urls'].should == raw_info['urls']
+				expect(subject['urls']).to eq raw_info['urls']
 			end
 		end
 
@@ -170,22 +170,22 @@ describe OmniAuth::Strategies::Salesforce do
 			subject { strategy.credentials }
 
 			it "sets token" do
-				subject['token'].should == strategy.access_token.token
+				expect(subject['token']).to eq strategy.access_token.token
 			end
 
 			it "sets instance_url" do
-				subject['instance_url'].should == strategy.access_token.params["instance_url"]
+				expect(subject['instance_url']).to eq strategy.access_token.params["instance_url"]
 			end
 
 			context "given a refresh token" do
 				it "sets refresh_token" do
-					subject['refresh_token'].should == strategy.access_token.refresh_token
+					expect(subject['refresh_token']).to eq strategy.access_token.refresh_token
 				end
 			end
 
 			context "when not given a refresh token" do
 				it "does not set a refresh token" do
-					subject['refresh_token'].should be_nil
+					expect(subject['refresh_token']).to be_nil
 				end
 			end
 		end
@@ -194,19 +194,19 @@ describe OmniAuth::Strategies::Salesforce do
 			subject { strategy.extra }
 
 			it "sets instance_url" do
-				subject['instance_url'].should == strategy.access_token.params['instance_url']
+				expect(subject['instance_url']).to eq strategy.access_token.params['instance_url']
 			end
 
 			it "sets pod" do
-				subject['pod'].should == strategy.access_token.params['instance_url']
+				expect(subject['pod']).to eq strategy.access_token.params['instance_url']
 			end
 
 			it "sets signature" do
-				subject['signature'].should == strategy.access_token.params['signature']
+				expect(subject['signature']).to eq strategy.access_token.params['signature']
 			end
 
 			it "sets issued_at" do
-				subject['issued_at'].should == strategy.access_token.params['issued_at']
+				expect(subject['issued_at']).to eq strategy.access_token.params['issued_at']
 			end
 		end
 
@@ -230,11 +230,11 @@ describe OmniAuth::Strategies::Salesforce do
 						'instance_url' => 'http://instance.salesforce.example',
 						'signature' => signature
 					}
-					strategy.stub(:access_token) { access_token }
+					allow(strategy).to receive(:access_token).and_return(access_token)
 				end
 
 				it "should call fail!" do
-					strategy.should_receive(:fail!)
+					expect(strategy).to receive(:fail!)
 					strategy.auth_hash
 				end
 			end
@@ -247,11 +247,11 @@ describe OmniAuth::Strategies::Salesforce do
 						'instance_url' => 'http://instance.salesforce.example',
 						'signature' => signature
 					}
-					strategy.stub(:access_token) { access_token }
+					allow(strategy).to receive(:access_token).and_return(access_token)
 				end
 
 				it "should not fail" do
-					strategy.should_not_receive(:fail!)
+					expect(strategy).to_not receive(:fail!)
 					strategy.auth_hash
 				end
 			end
