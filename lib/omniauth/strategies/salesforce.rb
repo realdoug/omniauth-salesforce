@@ -39,7 +39,7 @@ module OmniAuth
         raw_expected_signature = OpenSSL::HMAC.digest('sha256', options.client_secret.to_s, signed_value)
         expected_signature = Base64.strict_encode64 raw_expected_signature
         signature = access_token.params['signature']
-        fail! "Salesforce user id did not match signature!" unless signature == expected_signature
+        fail! "Salesforce user id did not match signature!" unless Rack::Utils.secure_compare(signature, expected_signature)
         super
       end
 
