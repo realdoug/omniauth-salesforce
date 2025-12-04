@@ -23,6 +23,8 @@ module OmniAuth
         :login_hint
       ]
 
+      option :pkce, true
+
       def request_phase
         req = Rack::Request.new(@env)
         options.update(req.params)
